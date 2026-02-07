@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Valentine Proposal ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffe6f0;
+  font-family: Arial;
+  text-align: center;
+  overflow: hidden;
+}
+
+input {
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin: 5px;
+  width: 220px;
+}
+
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+#yes { background: #ff0066; color: white; }
+#no {
+  background: gray;
+  color: white;
+  position: absolute;
+}
+
+.heart {
+  position: fixed;
+  top: -10%;
+  font-size: 24px;
+  animation: fall 4s linear;
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="start">
+<h2>Create Proposal ❤️</h2>
+<input id="aName" placeholder="Your name">
+<br>
+<input id="bName" placeholder="Crush name">
+<br>
+<button onclick="generate()">Generate Link</button>
+<p id="linkBox"></p>
+</div>
+
+<div id="game" style="display:none;">
+<h1 id="text"></h1>
+<button id="yes">Yes 😍</button>
+<button id="no">No 😐</button>
+</div>
+
+<script>
+let params = new URLSearchParams(window.location.search);
+let a = params.get("a");
+let b = params.get("b");
+
+let no = document.getElementById("no");
+let yes = document.getElementById("yes");
+let text = document.getElementById("text");
+
+if(a && b){
+  document.getElementById("start").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  text.innerText = a + " is asking… " + b + ", will you be my Valentine? ❤️";
+}
+
+function generate(){
+  let aName = document.getElementById("aName").value;
+  let bName = document.getElementById("bName").value;
+
+  let link = window.location.origin +
+    window.location.pathname +
+    "?a=" + encodeURIComponent(aName) +
+    "&b=" + encodeURIComponent(bName);
+
+  document.getElementById("linkBox").innerHTML =
+    `<input value="${link}" id="shareLink" readonly>
+     <br>
+     <button onclick="copy()">Copy Link</button>`;
+}
+
+function copy(){
+  let link = document.getElementById("shareLink");
+  link.select();
+  document.execCommand("copy");
+  alert("Link copied! Send it 😏");
+}
+
+let messages = [
+"Are you sure? 😢",
+"Think again…",
+"You can't escape 😈",
+"Wrong answer 😂"
+];
+
+let i = 0;
+
+function moveNo() {
+  let x = Math.random() * (window.innerWidth - 100);
+  let y = Math.random() * (window.innerHeight - 50);
+  no.style.left = x + "px";
+  no.style.top = y + "px";
+
+  text.innerText = messages[i % messages.length];
+  i++;
+  yes.style.transform = `scale(${1 + i * 0.1})`;
+}
+
+no.addEventListener("mouseover", moveNo);
+no.addEventListener("touchstart", moveNo);
+
+yes.onclick = () => {
+  text.innerText = "Proposal accepted!! ❤️✨";
+
+  setInterval(() => {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+  }, 150);
+};
+</script>
+
+</body>
+</html>
